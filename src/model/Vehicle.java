@@ -23,9 +23,11 @@ public class Vehicle extends SimulatedObject {
 	// Constructores
 	//########################################################################
 	
-	public Vehicle(String id, int i, List<Junction> itinerary) {
+	public Vehicle(String id, int speed, List<Junction> itinerary) {
 		super(id);
-		// TODO Auto-generated constructor stub
+
+		this.maxSpeed = speed;
+		this.itinerary = itinerary;
 	}
 	
 	//########################################################################
@@ -110,11 +112,11 @@ public class Vehicle extends SimulatedObject {
 	 * 
 	 */
 	@Override
-	void advance(int i) {
+	void advance(int time) {
 		if (faultyTime == 0) {
 			location = location + currSpeed;
 			
-			if (location >= road.getLenght()) {
+			if (location >= road.getLength()) {
 				road.getDestination().enter(this);
 				currSpeed = 0;
 			}
@@ -163,6 +165,8 @@ public class Vehicle extends SimulatedObject {
 		report += "kilometrage = " + kilometrage + "\n";
 		report += "faulty = " + faultyTime + "\n";
 		report += "location = (" + road.getId() + "," + location + ")\n";
+		
+		return report;
 	}
 	
 	/* (non-Javadoc)
