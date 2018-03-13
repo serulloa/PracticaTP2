@@ -27,10 +27,12 @@ public abstract class SimulatedObject {
 	}
 	
 	public String toString() {
+		//TODO
 		return id;
 	}
 	
 	public String generateReport(int i) {
+		//TODO
 		return null;
 	}
 	

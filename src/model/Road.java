@@ -63,18 +63,11 @@ public class Road extends SimulatedObject {
 	 */
 	@Override
 	void advance(int time) {
-		int baseSpeed = (maxSpeed / vehicles.size()) + 1;
-		boolean obstacles = false;
-		int reductionFactor = 1;
-		
-		for(int i = 0; i < vehicles.size() && !obstacles; i++) {
-			if(vehicles.get(i).getFaultyTime() > 0) obstacles = true;
-		}
-		
-		if (obstacles) reductionFactor = 2;
+		int baseSpeed = calculateBaseSpeed();
+		int speed = reduceSpeedFactor(baseSpeed);
 		
 		for (Vehicle v : vehicles) {
-			v.setSpeed(baseSpeed/reductionFactor);
+			v.setSpeed(speed);
 			v.advance(0);
 		}
 		
@@ -148,13 +141,21 @@ public class Road extends SimulatedObject {
 	}
 	
 	protected int calculateBaseSpeed() {
-		return 0;
-		//TODO
+		int baseSpeed = (maxSpeed / vehicles.size()) + 1;
+		return baseSpeed;
 	}
 	
-	protected int reduceSpeedFactor(int i) {
-		return 0;
-		//TODO
+	protected int reduceSpeedFactor(int baseSpeed) {
+		boolean obstacles = false;
+		int reductionFactor = 1;
+		
+		for(int i = 0; i < vehicles.size() && !obstacles; i++) {
+			if(vehicles.get(i).getFaultyTime() > 0) obstacles = true;
+		}
+		
+		if (obstacles) reductionFactor = 2;
+		
+		return baseSpeed/reductionFactor;
 	}
 
 }
