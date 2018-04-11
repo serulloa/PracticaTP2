@@ -19,5 +19,11 @@ public class NewRoadEvent extends Event {
 		// TODO Auto-generated method stub
 
 	}
+	
+	@Override
+	public String toString() {
+		// TODO
+		return null;
+	}
 
 }
