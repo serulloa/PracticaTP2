@@ -50,16 +50,47 @@ public class Junction extends SimulatedObject {
 	}
 	
 	void enter(Vehicle vehicle) {
-		//TODO
+		Road road = vehicle.getRoad();
+		IncomingRoad incomingRoad = null;
+		boolean foundIncomingRoad = false;
+		
+		for (int i = 0; i < roads.size() && !foundIncomingRoad; i++) {
+			if(roads.get(i).getRoad().getId() == road.getId()) {
+				foundIncomingRoad = true;
+				incomingRoad = roads.get(i);
+			}
+		}
+		
+		incomingRoad.addVehicle(vehicle);
 	}
 	
 	@Override
 	void advance(int time) {
-		//TODO
+		boolean foundGreen = false;
+		IncomingRoad incomingRoad = null;
+		int index = 0;
+		
+		for (int i = 0; i < roads.size() && !foundGreen; i++) {
+			if(roads.get(i).hasGreenLight()) {
+				foundGreen = true;
+				incomingRoad = roads.get(i);
+				index = i;
+			}
+		}
+		
+		if(incomingRoad != null) {
+			incomingRoad.advanceFirstVehicle();
+			switchLights(index);
+		}
 	}
 	
-	protected void switchLights() {
-		//TODO
+	protected void switchLights(int index) {
+		roads.get(index).setGreen(false);
+		
+		if(index >= roads.size()-1)
+			roads.get(0).setGreen(true);
+		else
+			roads.get(index+1).setGreen(true);
 	}
 	
 	protected IncomingRoad createIncomingRoadQueue(Road road) {
@@ -69,13 +100,24 @@ public class Junction extends SimulatedObject {
 	
 	@Override
 	protected String getReportSectionTag() {
-		//TODO
-		return null;
+		String report = "[junction_report]";
+		
+		report += "id = " + this.getId() + "\n";
+		report += "time = " + "\n"; //TODO
+		report += "queues = ";
+		
+		for (int i = 0; i < roads.size(); i++) {
+			report += "(" + roads.get(i).toString() + ")";
+			if(i < roads.size()-1) report += ",";
+		}
+		
+		return report;
 	}
 	
 	@Override
 	protected void fillReportDetails(IniSection iniSection) {
-		//TODO
+		iniSection.setValue("roads", roads);
+		iniSection.setValue("incomingRoads", incomingRoads);
 	}
 	
 	

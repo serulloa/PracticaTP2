@@ -1,6 +1,6 @@
 package model;
 
-import java.util.List;
+import java.util.Queue;
 
 public class IncomingRoad {
 	
@@ -9,7 +9,7 @@ public class IncomingRoad {
 	//########################################################################
 	
 	protected Road road; 			// carretera 
-	protected List<Vehicle> queue; 	// cola de vehículos 
+	protected Queue<Vehicle> queue; 	// cola de vehículos 
 	protected boolean green; 		// true si su semáforo está verde
 	
 	//########################################################################
@@ -37,7 +37,7 @@ public class IncomingRoad {
 	}
 	
 	protected void advanceFirstVehicle() {
-		queue.get(0).advance(0);
+		queue.poll().moveToNextRoad();
 	}
 	
 	protected void addVehicle(Vehicle v) {
@@ -50,8 +50,24 @@ public class IncomingRoad {
 	}
 	
 	public String toString() {
-		//TODO
-		return null;
+		String line = "";
+		
+		line += road.getId() + ",";
+		if (green) line += "green,";
+		else line += "red,";
+		
+		line += "[";
+		
+		Vehicle [] aux = (Vehicle[]) queue.toArray();
+		
+		for (int i = 0; i < queue.size(); i++) {
+			line += aux[i].getId();
+			if(i < queue.size()-1) line += ",";
+		}
+		
+		line += "]";
+		
+		return line;
 	}
 
 }
