@@ -3,6 +3,7 @@ package model;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TrafficSimulator {
 	
@@ -40,17 +41,21 @@ public class TrafficSimulator {
 					done = true;
 			}
 			
-			// TODO
-			/*
-			 * 2. invocar método avanzar carreteras
-			 * 3. invocar método avanzar cruces
-			 */
+			//TODO
+//			List<Road> roads = map.getRoads();
+//			for (Road road : roads) {
+//				road.advance(time);
+//			}
+//			
+//			List<Junction> junctions = map.getJunctions();
+//			for (Junction junction : junctions) {
+//				junction.advance(time);
+//			}
 			
 			time++;
 			
-			String report = this.toString();
-			if(report != null && !report.isEmpty())
-				outStream.write(report.getBytes());
+			//TODO
+//			String report = map.generateReport();
 		}
 	}
 	

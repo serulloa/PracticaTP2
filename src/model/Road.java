@@ -68,7 +68,7 @@ public class Road extends SimulatedObject {
 		
 		for (Vehicle v : vehicles) {
 			v.setSpeed(speed);
-			v.advance(0);
+			v.advance(time);
 		}
 		
 		vehicles.sort(new SortByLocation());
