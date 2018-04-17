@@ -6,7 +6,7 @@ public class MakeVehicleFaultyEvent extends Event {
 	// Constructores
 	//########################################################################
 
-	MakeVehicleFaultyEvent(int i, Integer time, String [] ids) {
+	public MakeVehicleFaultyEvent(int i, Integer time, String [] ids) {
 		super(time);
 		// TODO Auto-generated constructor stub
 	}

@@ -1,8 +1,13 @@
 package control;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
+import ini.Ini;
+import ini.IniSection;
+import model.Event;
 import model.TrafficSimulator;
 
 public class Controller {
@@ -45,7 +50,12 @@ public class Controller {
 	}
 	
 	public void run() {
-		//TODO
+		try {
+			loadEvents(inputStream);
+			sim.run(ticks);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void reset() {
@@ -60,8 +70,25 @@ public class Controller {
 		//TODO
 	}
 	
-	public void loadEvents(InputStream input) {
+	public void loadEvents(InputStream input) throws IOException {
 		//TODO
+		Ini iniStream = new Ini(input);
+		List<IniSection> sections = iniStream.getSections();
+		
+		for(IniSection is : sections) {
+			this.sim.addEvent(parseEvent(is));
+		}
 	}
+	
+	private Event parseEvent(IniSection sec){
+		Event result = null;
+		for(EventBuilder i: this.eventBuilders){
+			Event e = i.parse(sec);
+			
+			if(e!=null)
+				result = e;
+		}
+		return result;
+	}	
 
 }
