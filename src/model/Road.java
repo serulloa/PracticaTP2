@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 
 import ini.IniSection;
-import util.SortByLocation;
+import misc.SortByLocation;
 
 public class Road extends SimulatedObject {
 	
