@@ -10,17 +10,25 @@ public class SortedArrayList<E> extends ArrayList<E> {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private Comparator<E> _comp;
 
 	//########################################################################
 	// Constructores
 	//########################################################################
 
 	public SortedArrayList(Comparator<E> comp) {
-		//TODO
+		super();
+		_comp = comp;
 	}
 	
 	public SortedArrayList() {
-		//TODO
+		_comp = new Comparator<E>() {
+			
+			@Override 
+			public int compare(E o1, E o2) {
+				return ((Comparable<E>) o1).compareTo(o2);
+			}
+		};
 	}
 	
 	//########################################################################
@@ -29,31 +37,33 @@ public class SortedArrayList<E> extends ArrayList<E> {
 	
 	@Override
 	public boolean add(E element) {
-		//TODO
-		return false;
+		int i = 0;
+		
+		while (i < size() && _comp.compare(element, get(i)) != 1) i++;
+		super.add(i, element);
+		
+		return true;
 	}
 	
 	@Override
 	public boolean addAll(Collection<? extends E> elements) {
-		//TODO
-		return false;
+		for (E element : elements) add(element);
+		return true;
 	}
 	
 	@Override
 	public void add(int index, E element) {
-		//TODO
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public boolean addAll(int index, Collection<? extends E> elements) {
-		//TODO
-		return false;
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public E set(int index, E element) {
-		//TODO
-		return null;
+		throw new UnsupportedOperationException();
 	}
 	
 }

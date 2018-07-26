@@ -31,8 +31,20 @@ public abstract class Event {
 	}
 	
 	public int compareTo(Event event) {
-		//TODO
-		return 0;
+		int result = 1;
+		
+		if (this.time < event.getScheduledTime()) result = -1;
+		else if (this.time == event.getScheduledTime()) result = 0;
+		
+		return result;
+	}
+	
+	public boolean validateId(String id) {
+		boolean ok = false;
+		
+		if (id != null && id.matches("[a-z0-9_]+")) ok = true;
+		
+		return ok;
 	}
 	
 	protected Junction checkIfJunctionExists(RoadMap roadMap, String id) {

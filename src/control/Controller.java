@@ -26,8 +26,9 @@ public class Controller {
 	// Constuctores
 	//########################################################################
 	
-	public Controller(TrafficSimulator sim, OutputStream output, InputStream input) {
+	public Controller(TrafficSimulator sim, int ticks, OutputStream output, InputStream input) {
 		this.sim = sim;
+		this.ticks = ticks;
 		this.outputStream = output;
 		this.inputStream = input;
 	}
@@ -35,6 +36,9 @@ public class Controller {
 	public Controller(TrafficSimulator sim, OutputStream output) {
 		this.sim = sim;
 		this.outputStream = output;
+		
+		this.ticks = 0;
+		this.inputStream = null;
 	}
 	
 	//########################################################################
@@ -55,6 +59,8 @@ public class Controller {
 			sim.run(ticks);
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (NullPointerException e) {
+			System.err.println("ERROR: Se ha producido un error en el parseo.");
 		}
 	}
 	
@@ -67,7 +73,14 @@ public class Controller {
 	}
 	
 	public void run(int time) {
-		//TODO
+		try {
+			loadEvents(inputStream);
+			sim.run(ticks);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (NullPointerException e) {
+			System.err.println("ERROR: Se ha producido un error en el parseo.");
+		}
 	}
 	
 	public void loadEvents(InputStream input) throws IOException {

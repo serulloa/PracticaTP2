@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,8 +13,8 @@ public class Junction extends SimulatedObject {
 	// Atributos
 	//########################################################################
 	
-	protected List<IncomingRoad> roads; 		 // lista de carreteras entrantes 
-	protected Map<Junction, Road> incomingRoads; // mapa de carreteras entrantes indicando cual es su cruce origen
+	protected List<IncomingRoad> incomingRoads;		// lista de carreteras entrantes 
+	protected Map<Junction, Road> outcomingRoads;	// mapa de carreteras salientes indicando cual es su cruce destino
 	
 	//########################################################################
 	// Constructores
@@ -20,6 +22,8 @@ public class Junction extends SimulatedObject {
 
 	public Junction(String id) {
 		super(id);
+		this.incomingRoads = new ArrayList<IncomingRoad>();
+		this.outcomingRoads = new HashMap<Junction, Road>();
 	}
 	
 	//########################################################################
@@ -27,26 +31,23 @@ public class Junction extends SimulatedObject {
 	//########################################################################
 	
 	public Road roadTo(Junction junction) {
-		//TODO
-		return null;
+		return outcomingRoads.get(junction);
 	}
 	
 	public Road roadFrom(Junction junction) {
-		//TODO
-		return null;
+		return junction.outcomingRoads.get(this);
 	}
 	
 	public List<IncomingRoad> getRoadsInfo() {
-		//TODO
-		return null;
+		return incomingRoads;
 	}
 	
 	void addIncomingRoad(Road road) {
-		//TODO
+		incomingRoads.add(new IncomingRoad(road));
 	}
 	
 	void addOutgoingRoad(Road road) {
-		//TODO
+		outcomingRoads.put(road.desJunc, road);
 	}
 	
 	void enter(Vehicle vehicle) {
@@ -54,14 +55,14 @@ public class Junction extends SimulatedObject {
 		IncomingRoad incomingRoad = null;
 		boolean foundIncomingRoad = false;
 		
-		for (int i = 0; i < roads.size() && !foundIncomingRoad; i++) {
-			if(roads.get(i).getRoad().getId() == road.getId()) {
+		for (int i = 0; i < incomingRoads.size() && !foundIncomingRoad; i++) {
+			if(incomingRoads.get(i).getRoad().getId() == road.getId()) {
 				foundIncomingRoad = true;
-				incomingRoad = roads.get(i);
+				incomingRoad = incomingRoads.get(i);
 			}
 		}
 		
-		incomingRoad.addVehicle(vehicle);
+		if (incomingRoad != null) incomingRoad.addVehicle(vehicle);
 	}
 	
 	@Override
@@ -70,10 +71,10 @@ public class Junction extends SimulatedObject {
 		IncomingRoad incomingRoad = null;
 		int index = 0;
 		
-		for (int i = 0; i < roads.size() && !foundGreen; i++) {
-			if(roads.get(i).hasGreenLight()) {
+		for (int i = 0; i < incomingRoads.size() && !foundGreen; i++) {
+			if(incomingRoads.get(i).hasGreenLight()) {
 				foundGreen = true;
-				incomingRoad = roads.get(i);
+				incomingRoad = incomingRoads.get(i);
 				index = i;
 			}
 		}
@@ -85,12 +86,12 @@ public class Junction extends SimulatedObject {
 	}
 	
 	protected void switchLights(int index) {
-		roads.get(index).setGreen(false);
+		incomingRoads.get(index).setGreen(false);
 		
-		if(index >= roads.size()-1)
-			roads.get(0).setGreen(true);
+		if(index >= incomingRoads.size()-1)
+			incomingRoads.get(0).setGreen(true);
 		else
-			roads.get(index+1).setGreen(true);
+			incomingRoads.get(index+1).setGreen(true);
 	}
 	
 	protected IncomingRoad createIncomingRoadQueue(Road road) {
@@ -100,23 +101,25 @@ public class Junction extends SimulatedObject {
 	
 	@Override
 	protected String getReportSectionTag() {
-		String report = "[junction_report]";
+//		String report = "[junction_report]";
+//		
+//		report += "id = " + this.getId() + "\n";
+//		report += "time = " + "\n"; //TODO
+//		report += "queues = ";
+//		
+//		for (int i = 0; i < roads.size(); i++) {
+//			report += "(" + roads.get(i).toString() + ")";
+//			if(i < roads.size()-1) report += ",";
+//		}
+//		
+//		return report;
 		
-		report += "id = " + this.getId() + "\n";
-		report += "time = " + "\n"; //TODO
-		report += "queues = ";
-		
-		for (int i = 0; i < roads.size(); i++) {
-			report += "(" + roads.get(i).toString() + ")";
-			if(i < roads.size()-1) report += ",";
-		}
-		
-		return report;
+		return "junction_report";
 	}
 	
 	@Override
 	protected void fillReportDetails(IniSection iniSection) {
-		iniSection.setValue("roads", roads);
+		iniSection.setValue("roads", incomingRoads);
 		iniSection.setValue("incomingRoads", incomingRoads);
 	}
 	

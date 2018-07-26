@@ -3,12 +3,20 @@ package model;
 public class MakeVehicleFaultyEvent extends Event {
 	
 	//########################################################################
+	// Atributos
+	//########################################################################
+	
+	private String[] ids;
+	private int duration;
+	
+	//########################################################################
 	// Constructores
 	//########################################################################
 
-	public MakeVehicleFaultyEvent(int i, Integer time, String [] ids) {
+	public MakeVehicleFaultyEvent(int time, Integer duration, String [] ids) {
 		super(time);
-		// TODO Auto-generated constructor stub
+		this.duration = duration;
+		this.ids = ids;
 	}
 	
 	//########################################################################
@@ -17,14 +25,14 @@ public class MakeVehicleFaultyEvent extends Event {
 
 	@Override
 	public void execute(RoadMap roadMap, int time) {
-		// TODO Auto-generated method stub
-
+		if (this.time == time) {
+			for (String id : ids) roadMap.makeFaulty(id, duration);
+		}
 	}
 	
 	@Override
 	public String toString() {
-		// TODO
-		return null;
+		return "Faulty";
 	}
 
 }

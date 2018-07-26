@@ -1,6 +1,8 @@
 package model;
 
-import java.util.Queue;
+import java.util.List;
+
+import misc.SortedArrayList;
 
 public class IncomingRoad {
 	
@@ -9,7 +11,7 @@ public class IncomingRoad {
 	//########################################################################
 	
 	protected Road road; 			// carretera 
-	protected Queue<Vehicle> queue; 	// cola de vehículos 
+	protected List<Vehicle> queue; 	// cola de vehículos 
 	protected boolean green; 		// true si su semáforo está verde
 	
 	//########################################################################
@@ -18,6 +20,7 @@ public class IncomingRoad {
 	
 	public IncomingRoad(Road road) {
 		this.road = road;
+		this.queue = new SortedArrayList<Vehicle>();
 	}
 	
 	//########################################################################
@@ -37,7 +40,10 @@ public class IncomingRoad {
 	}
 	
 	protected void advanceFirstVehicle() {
-		queue.poll().moveToNextRoad();
+		if (!queue.isEmpty()) {
+			queue.get(0).moveToNextRoad();
+			queue.remove(0);
+		}
 	}
 	
 	protected void addVehicle(Vehicle v) {
@@ -45,16 +51,7 @@ public class IncomingRoad {
 	}
 	
 	protected String printQueue() {
-		//TODO
-		return null;
-	}
-	
-	public String toString() {
 		String line = "";
-		
-		line += road.getId() + ",";
-		if (green) line += "green,";
-		else line += "red,";
 		
 		line += "[";
 		
@@ -66,6 +63,18 @@ public class IncomingRoad {
 		}
 		
 		line += "]";
+		
+		return line;
+	}
+	
+	public String toString() {
+		String line = "";
+		
+		line += road.getId() + ",";
+		if (green) line += "green,";
+		else line += "red,";
+		
+		line += printQueue();
 		
 		return line;
 	}

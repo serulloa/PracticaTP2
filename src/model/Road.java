@@ -67,7 +67,8 @@ public class Road extends SimulatedObject {
 		int speed = reduceSpeedFactor(baseSpeed);
 		
 		for (Vehicle v : vehicles) {
-			v.setSpeed(speed);
+			if (v.getFaultyTime() > 0) v.setSpeed(0);
+			else v.setSpeed(speed);
 			v.advance(time);
 		}
 		

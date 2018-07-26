@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +23,12 @@ public class RoadMap {
 	//########################################################################	
 	
 	RoadMap() {
-		
+		this.vehicles = new ArrayList<Vehicle>();
+		this.roads = new ArrayList<Road>();
+		this.junctions = new ArrayList<Junction>();
+		this.vehicleMap = new HashMap<String,Vehicle>();
+		this.roadMap = new HashMap<String,Road>();
+		this.junctionMap = new HashMap<String,Junction>();
 	}
 	
 	//########################################################################
@@ -31,6 +38,7 @@ public class RoadMap {
 	void addVehicle(Vehicle vehicle) {
 		vehicles.add(vehicle);
 		vehicleMap.put(vehicle.getId(), vehicle);
+		vehicle.moveToNextRoad();
 	}
 	
 	void addRoad(Road road) {
@@ -67,4 +75,15 @@ public class RoadMap {
 		return report;
 	}
 	
+	public void makeFaulty(String vehicleId, int time) {
+		if (vehicleMap.get(vehicleId) != null) vehicleMap.get(vehicleId).makeFaulty(time);
+	}
+	
+	public boolean hasJunction(String id) {
+		return junctionMap.get(id) != null;
+	}
+	
+	public Junction getJunction(String id) {
+		return junctionMap.get(id);
+	}
 }
