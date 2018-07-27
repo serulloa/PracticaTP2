@@ -88,10 +88,8 @@ public class Vehicle extends SimulatedObject {
 	 * @param speed
 	 */
 	void setSpeed(int speed) {
-		currSpeed = speed;
-		
-		if (currSpeed > maxSpeed)
-			currSpeed = maxSpeed;
+		if (currSpeed > maxSpeed) currSpeed = maxSpeed;
+		else currSpeed = speed;
 	}
 	
 	/*
@@ -113,16 +111,20 @@ public class Vehicle extends SimulatedObject {
 	 */
 	@Override
 	void advance(int time) {
-		if (faultyTime == 0) {
+		if (faultyTime == 0 && !atJunction) {
 			location = location + currSpeed;
+			kilometrage += currSpeed;
 			
 			if (location >= road.getLength()) {
-				road.getDestination().enter(this);
+				atJunction = true;
 				currSpeed = 0;
+				kilometrage -= location - road.getLength();
+				location = road.getLength();
+				
+				if (road.getDestination().equals(itinerary.get(0))) road.getDestination().enter(this);
 			}
 		}
-		else
-			faultyTime--;
+		else if (faultyTime > 0) faultyTime--;
 	}
 	
 	/**
@@ -135,22 +137,42 @@ public class Vehicle extends SimulatedObject {
 	 * de su itinerario no entra en ninguna y arrived toma el valor true.
 	 */
 	void moveToNextRoad() {
-		Junction junction = null;
+//		Junction junction = null;
+//		
+//		if (road != null)
+//			junction = road.getDestination();
+//		else
+//			junction = itinerary.get(0);
+//		
+//		if (junction == itinerary.get(itinerary.size())) {
+//			arrived = true;
+//			currSpeed = 0;
+//		}
+//		else {
+//			road = junction.roadTo(itinerary.get(itinerary.indexOf(junction) + 1));
+//			road.enter(this);
+//			location = 0;
+//		}
 		
-		if (road != null)
-			junction = road.getDestination();
-		else
-			junction = itinerary.get(0);
+		boolean next = false;
 		
-		if(junction == itinerary.get(itinerary.size())) {
-			arrived = true;
-			currSpeed = 0;
-		}
-		else {
-			road.exit(this);
-			road = junction.roadTo(itinerary.get(itinerary.indexOf(junction) + 1));
-			road.enter(this);
+		if (road != null) {
 			location = 0;
+			currSpeed = 0;
+			road.exit(this);
+			
+			if (itinerary.size() == 1) arrived = true;
+			else {
+				next = true;
+				atJunction = false;
+			}
+		} 
+		else next = true;
+		
+		if (next) {
+			road = itinerary.get(0).roadTo(itinerary.get(1));
+			road.enter(this);
+			itinerary.remove(0);
 		}
 	}
 	

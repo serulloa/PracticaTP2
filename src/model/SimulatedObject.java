@@ -1,5 +1,6 @@
 package model;
 
+import ini.Ini;
 import ini.IniSection;
 
 public abstract class SimulatedObject {
@@ -27,13 +28,20 @@ public abstract class SimulatedObject {
 	}
 	
 	public String toString() {
-		//TODO
 		return id;
 	}
 	
 	public String generateReport(int i) {
-		//TODO
-		return null;
+		Ini ini = new Ini();
+		IniSection iniSection = new IniSection(getReportSectionTag());
+		
+		iniSection.setValue("id", this.id);
+		iniSection.setValue("time", i);
+		
+		fillReportDetails(iniSection);
+		ini.addsection(iniSection);
+		
+		return ini.toString();
 	}
 	
 	//########################################################################

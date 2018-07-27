@@ -86,4 +86,12 @@ public class RoadMap {
 	public Junction getJunction(String id) {
 		return junctionMap.get(id);
 	}
+
+	public List<Road> getRoads() {
+		return roads;
+	}
+
+	public List<Junction> getJunctions() {
+		return junctions;
+	}
 }

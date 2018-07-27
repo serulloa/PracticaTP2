@@ -5,6 +5,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import misc.SortedArrayList;
+
 public class TrafficSimulator {
 	
 	//########################################################################
@@ -22,6 +24,9 @@ public class TrafficSimulator {
 	
 	public TrafficSimulator(OutputStream outStream) {
 		this.outStream = outStream;
+		this.map = new RoadMap();
+		this.events = new SortedArrayList<Event>();
+		this.time = 0;
 	}
 	
 	//########################################################################
@@ -29,7 +34,6 @@ public class TrafficSimulator {
 	//########################################################################
 	
 	public void run(int ticks) throws IOException {
-		//TODO
 		int limit = time + ticks - 1;
 		boolean done = false;
 		
@@ -41,21 +45,19 @@ public class TrafficSimulator {
 					done = true;
 			}
 			
-			//TODO
-//			List<Road> roads = map.getRoads();
-//			for (Road road : roads) {
-//				road.advance(time);
-//			}
-//			
-//			List<Junction> junctions = map.getJunctions();
-//			for (Junction junction : junctions) {
-//				junction.advance(time);
-//			}
+			List<Road> roads = map.getRoads();
+			for (Road road : roads) {
+				road.advance(time);
+			}
+			
+			List<Junction> junctions = map.getJunctions();
+			for (Junction junction : junctions) {
+				junction.advance(time);
+			}
 			
 			time++;
 			
-			//TODO
-//			String report = map.generateReport();
+			this.outStream.write(map.generateReport(time).getBytes());
 		}
 	}
 	
@@ -88,7 +90,7 @@ public class TrafficSimulator {
 	}
 	
 //	public void addObserver(TrafficSimulatorObserver observer) {
-//		//TODO
+//		//TODO  
 //	}
 //	
 //	public void removeObserver(TrafficSimulatorObserver observer) {
