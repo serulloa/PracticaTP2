@@ -2,7 +2,7 @@ package tp.pr4.model;
 
 import java.util.List;
 
-public abstract class Event {
+public abstract class Event implements Comparable<Event> {
 	
 	//########################################################################
 	// Atributos

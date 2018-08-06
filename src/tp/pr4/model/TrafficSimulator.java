@@ -62,23 +62,7 @@ public class TrafficSimulator {
 	}
 	
 	public void addEvent(Event e) {
-		int time = e.getScheduledTime();
-		boolean equalTime = false;
-		boolean inserted = false;
-		
-		if(time >= this.time) {
-			for(int i = 0; i < events.size() && !inserted; i++) {
-				if(!equalTime) {
-					if(time == events.get(i).getScheduledTime()) equalTime = true;
-				}
-				else {
-					if(time != events.get(i).getScheduledTime()) {
-						events.add(i, e);
-						inserted = true;
-					}
-				}
-			}
-		}
+		this.events.add(e);
 	}
 	
 	public void reset() {
