@@ -119,8 +119,8 @@ public class Junction extends SimulatedObject {
 	
 	@Override
 	protected void fillReportDetails(IniSection iniSection) {
-		iniSection.setValue("roads", incomingRoads);
 		iniSection.setValue("incomingRoads", incomingRoads);
+		iniSection.setValue("outcomingRoads", outcomingRoads);
 	}
 	
 	

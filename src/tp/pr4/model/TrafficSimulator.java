@@ -34,10 +34,9 @@ public class TrafficSimulator {
 	//########################################################################
 	
 	public void run(int ticks) throws IOException {
-		int limit = time + ticks - 1;
 		boolean done = false;
 		
-		while(time <= limit) {
+		while(time < ticks) {
 			for(int i = 0; i < events.size() && !done; i++) {
 				if(events.get(i).getScheduledTime() == time)
 					events.get(i).execute(map, time);

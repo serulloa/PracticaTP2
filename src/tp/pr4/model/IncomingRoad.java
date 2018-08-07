@@ -55,10 +55,10 @@ public class IncomingRoad {
 		
 		line += "[";
 		
-		Vehicle [] aux = (Vehicle[]) queue.toArray();
+		Object [] aux = queue.toArray();
 		
 		for (int i = 0; i < queue.size(); i++) {
-			line += aux[i].getId();
+			line += ((Vehicle) aux[i]).getId();
 			if(i < queue.size()-1) line += ",";
 		}
 		

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import tp.pr4.ini.IniSection;
 import tp.pr4.misc.SortByLocation;
+import tp.pr4.misc.SortedArrayList;
 
 public class Road extends SimulatedObject {
 	
@@ -28,6 +29,7 @@ public class Road extends SimulatedObject {
 		this.maxSpeed = maxSpeed;
 		this.srcJunc = srcJunc;
 		this.desJunc = desJunc;
+		this.vehicles = new SortedArrayList<Vehicle>();
 	}
 	
 	//########################################################################
