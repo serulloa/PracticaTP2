@@ -65,12 +65,21 @@ public class Road extends SimulatedObject {
 	 */
 	@Override
 	void advance(int time) {
-		int baseSpeed = calculateBaseSpeed();
-		int speed = reduceSpeedFactor(baseSpeed);
+		int speed = calculateBaseSpeed();
+		boolean faultyAhead = false;
+		int reductionFactor = 2;
+		
+		if(speed > maxSpeed) speed = maxSpeed;
 		
 		for (Vehicle v : vehicles) {
-			if (v.getFaultyTime() > 0) v.setSpeed(0);
-			else v.setSpeed(speed);
+			if (v.getFaultyTime() > 0) {
+				faultyAhead = true;
+				v.setSpeed(0);
+			}
+			else {
+				if (faultyAhead) speed = speed / reductionFactor;
+				v.setSpeed(speed);
+			}
 			v.advance(time);
 		}
 		
@@ -111,20 +120,7 @@ public class Road extends SimulatedObject {
 	
 	@Override
 	protected String getReportSectionTag() {
-		String report = "";
-		
-		report += "[road_report]\n";
-		report += "id = " + this.getId() + "\n";
-		report += "time = " + "\n"; //TODO
-		report += "state = ";
-		
-		for (int i = 0; i < vehicles.size(); i++) {
-			report += "(" + vehicles.get(i).getId() + "," + vehicles.get(i).getLocation() + ")";
-			
-			if(i < vehicles.size()-1) report += ",";
-		}
-		
-		return report;
+		return "road_report";
 	}
 	
 	/* (non-Javadoc)
@@ -136,29 +132,25 @@ public class Road extends SimulatedObject {
 	 */
 	@Override
 	protected void fillReportDetails(IniSection iniSection) {
-		iniSection.setValue("length", length);
-		iniSection.setValue("maxSpeed", maxSpeed);
-		iniSection.setValue("srcJunc", srcJunc);
-		iniSection.setValue("desJunc", desJunc);
-		iniSection.setValue("vehicles", vehicles);
+		String state = "";
+		
+		
+		if (!vehicles.isEmpty()) {
+			for (Vehicle vehicle : vehicles)
+				state += "(" + vehicle.getId() + "," + vehicle.getLocation() + "),";
+			
+			state = state.substring(0, state.length() - 1);
+		}
+		
+		iniSection.setValue("state", state);
 	}
 	
 	protected int calculateBaseSpeed() {
-		int baseSpeed = (maxSpeed / vehicles.size()) + 1;
+		int count = 1;
+		if(vehicles.size() > count) count = vehicles.size();
+		
+		int baseSpeed = (maxSpeed / count) + 1;
 		return baseSpeed;
-	}
-	
-	protected int reduceSpeedFactor(int baseSpeed) {
-		boolean obstacles = false;
-		int reductionFactor = 1;
-		
-		for(int i = 0; i < vehicles.size() && !obstacles; i++) {
-			if(vehicles.get(i).getFaultyTime() > 0) obstacles = true;
-		}
-		
-		if (obstacles) reductionFactor = 2;
-		
-		return baseSpeed/reductionFactor;
 	}
 
 }

@@ -63,14 +63,14 @@ public class RoadMap {
 	public String generateReport(int time) {
 		String report = "";
 		
-		for (Vehicle v : vehicles)
-			report += v.generateReport(time);
+		for (Junction j : junctions)
+			report += j.generateReport(time);
 		
 		for (Road r : roads)
 			report += r.generateReport(time);
 		
-		for (Junction j : junctions)
-			report += j.generateReport(time);
+		for (Vehicle v : vehicles)
+			report += v.generateReport(time);
 		
 		return report;
 	}

@@ -21,6 +21,7 @@ public class IncomingRoad {
 	public IncomingRoad(Road road) {
 		this.road = road;
 		this.queue = new SortedArrayList<Vehicle>();
+		this.green = false;
 	}
 	
 	//########################################################################

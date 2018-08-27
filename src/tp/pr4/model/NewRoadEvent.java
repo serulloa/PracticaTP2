@@ -31,7 +31,6 @@ public class NewRoadEvent extends Event {
 
 	@Override
 	public void execute(RoadMap roadMap, int time) {
-		// TODO Auto-generated method stub
 		if (this.time == time && validateId(roadId) && roadMap.hasJunction(toId) && roadMap.hasJunction(fromId)) {
 			Junction toJunction = roadMap.getJunction(toId);
 			Junction fromJunction = roadMap.getJunction(fromId);

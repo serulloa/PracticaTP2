@@ -29,7 +29,6 @@ public class NewVehicleEvent extends Event {
 
 	@Override
 	public void execute(RoadMap roadMap, int time) {
-		// TODO Auto-generated method stub
 		if (this.time == time && validateId(vehicleId)) {
 			ArrayList<Junction> junctions = new ArrayList<Junction>();
 			

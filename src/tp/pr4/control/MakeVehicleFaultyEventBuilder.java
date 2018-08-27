@@ -40,6 +40,7 @@ public class MakeVehicleFaultyEventBuilder extends EventBuilder {
 			for(int i=1 ; i<aux.length; i++)
 				vehicles = vehicles + aux[i] + " ";
 			
+			this.defaultValues[0] = section.getValue(this.keys[0]);
 			this.defaultValues[1] = vehicles;				
 			this.defaultValues[2] = section.getValue(this.keys[2]);
 			

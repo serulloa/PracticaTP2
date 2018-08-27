@@ -68,30 +68,34 @@ public class Junction extends SimulatedObject {
 	@Override
 	void advance(int time) {
 		boolean foundGreen = false;
-		IncomingRoad incomingRoad = null;
-		int index = 0;
 		
 		for (int i = 0; i < incomingRoads.size() && !foundGreen; i++) {
 			if(incomingRoads.get(i).hasGreenLight()) {
+				incomingRoads.get(i).advanceFirstVehicle();
 				foundGreen = true;
-				incomingRoad = incomingRoads.get(i);
-				index = i;
 			}
 		}
 		
-		if(incomingRoad != null) {
-			incomingRoad.advanceFirstVehicle();
-			switchLights(index);
-		}
+		switchLights();
 	}
 	
-	protected void switchLights(int index) {
-		incomingRoads.get(index).setGreen(false);
+	protected void switchLights() {
+		int index = -1;
+		boolean foundGreen = false;
 		
-		if(index >= incomingRoads.size()-1)
-			incomingRoads.get(0).setGreen(true);
-		else
-			incomingRoads.get(index+1).setGreen(true);
+		for (int i = 0; i < incomingRoads.size() && !foundGreen; i++) {
+			if (incomingRoads.get(i).hasGreenLight()) {
+				index = i;
+				foundGreen = true;
+				incomingRoads.get(i).green = false;
+			}
+		}
+		
+		if (index >= 0 && index < incomingRoads.size()) {
+			if (index == incomingRoads.size()-1) incomingRoads.get(0).green = true;
+			else incomingRoads.get(index+1).green = true;
+		} 
+		else if (!foundGreen && !incomingRoads.isEmpty()) incomingRoads.get(0).green = true;
 	}
 	
 	protected IncomingRoad createIncomingRoadQueue(Road road) {
@@ -100,27 +104,22 @@ public class Junction extends SimulatedObject {
 	}
 	
 	@Override
-	protected String getReportSectionTag() {
-//		String report = "[junction_report]";
-//		
-//		report += "id = " + this.getId() + "\n";
-//		report += "time = " + "\n"; //TODO
-//		report += "queues = ";
-//		
-//		for (int i = 0; i < roads.size(); i++) {
-//			report += "(" + roads.get(i).toString() + ")";
-//			if(i < roads.size()-1) report += ",";
-//		}
-//		
-//		return report;
-		
+	protected String getReportSectionTag() {		
 		return "junction_report";
 	}
 	
 	@Override
 	protected void fillReportDetails(IniSection iniSection) {
-		iniSection.setValue("incomingRoads", incomingRoads);
-		iniSection.setValue("outcomingRoads", outcomingRoads);
+		String queues = "";
+		
+		if (!incomingRoads.isEmpty()) {
+			for (IncomingRoad incomingRoad : incomingRoads)
+				queues += "(" + incomingRoad.toString() + "),";
+			
+			queues = queues.substring(0, queues.length() - 1);
+		}
+		
+		iniSection.setValue("queues", queues);
 	}
 	
 	

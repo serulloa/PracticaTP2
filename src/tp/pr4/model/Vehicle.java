@@ -4,7 +4,7 @@ import java.util.List;
 
 import tp.pr4.ini.IniSection;
 
-public class Vehicle extends SimulatedObject {
+public class Vehicle extends SimulatedObject implements Comparable<Vehicle>{
 	
 	//########################################################################
 	// Atributos
@@ -89,8 +89,10 @@ public class Vehicle extends SimulatedObject {
 	 * @param speed
 	 */
 	void setSpeed(int speed) {
-		if (currSpeed > maxSpeed) currSpeed = maxSpeed;
-		else currSpeed = speed;
+		if (!atJunction) {
+			if (speed > maxSpeed) currSpeed = maxSpeed;
+			else currSpeed = speed;
+		}
 	}
 	
 	/*
@@ -179,17 +181,7 @@ public class Vehicle extends SimulatedObject {
 	
 	@Override
 	protected String getReportSectionTag() {
-		String report = "";
-		
-		report += "[vehicle_report]\n";
-		report += "id = " + this.getId() + "\n";
-		report += "time = " + "\n"; //TODO
-		report += "speed = " + currSpeed + "\n";
-		report += "kilometrage = " + kilometrage + "\n";
-		report += "faulty = " + faultyTime + "\n";
-		report += "location = (" + road.getId() + "," + location + ")\n";
-		
-		return report;
+		return "vehicle_report";
 	}
 	
 	/* (non-Javadoc)
@@ -201,15 +193,25 @@ public class Vehicle extends SimulatedObject {
 	 */
 	@Override
 	protected void fillReportDetails(IniSection iniSection) {
-		iniSection.setValue("maxSpeed", maxSpeed);
-		iniSection.setValue("currSpeed", currSpeed);
-		iniSection.setValue("road", road);
-		iniSection.setValue("location", location);
-		iniSection.setValue("itinerary", itinerary);
+		iniSection.setValue("speed", currSpeed);
 		iniSection.setValue("kilometrage", kilometrage);
-		iniSection.setValue("faultyTime", faultyTime);
-		iniSection.setValue("atJunction", atJunction);
-		iniSection.setValue("arrived", arrived);
+		iniSection.setValue("faulty", faultyTime);
+		
+		String location = "";
+		if(arrived) location = "arrived";
+		else location = "(" + road.getId() + "," + this.location + ")";
+		
+		iniSection.setValue("location", location);
+	}
+	
+	@Override
+	public int compareTo(Vehicle vehicle) {
+		int result = 0;
+		
+		if (this.location < vehicle.location) result = -1;
+		else if (this.location > vehicle.location) result = 1;
+		
+		return result;
 	}
 
 }

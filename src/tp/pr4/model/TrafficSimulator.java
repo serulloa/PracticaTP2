@@ -36,13 +36,9 @@ public class TrafficSimulator {
 	public void run(int ticks) throws IOException {
 		boolean done = false;
 		
-		while(time < ticks) {
-			for(int i = 0; i < events.size() && !done; i++) {
-				if(events.get(i).getScheduledTime() == time)
-					events.get(i).execute(map, time);
-				else if(events.get(i).getScheduledTime() >= time)
-					done = true;
-			}
+		while(time < ticks) {			
+			for (Event event : events) 
+				event.execute(map, time);
 			
 			List<Road> roads = map.getRoads();
 			for (Road road : roads) {
