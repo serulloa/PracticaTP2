@@ -6,11 +6,11 @@ public class NewRoadEvent extends Event {
 	// Atributos
 	//########################################################################
 	
-	private String roadId;
-	private String toId;
-	private String fromId;
-	private int maxSpeed;
-	private int length;
+	protected String roadId;
+	protected String toId;
+	protected String fromId;
+	protected int maxSpeed;
+	protected int length;
 	
 	//########################################################################
 	// Constructores

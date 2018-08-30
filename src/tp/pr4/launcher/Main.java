@@ -21,8 +21,14 @@ import org.apache.commons.cli.ParseException;
 import tp.pr4.control.Controller;
 import tp.pr4.control.EventBuilder;
 import tp.pr4.control.MakeVehicleFaultyEventBuilder;
+import tp.pr4.control.NewBikeEventBuilder;
+import tp.pr4.control.NewCarEventBuilder;
+import tp.pr4.control.NewDirtRoadEventBuilder;
 import tp.pr4.control.NewJunctionEventBuilder;
+import tp.pr4.control.NewLanesRoadEventBuilder;
+import tp.pr4.control.NewMostCrowdedJunctionEventBuilder;
 import tp.pr4.control.NewRoadEventBuilder;
+import tp.pr4.control.NewRoundRobinJunctionEventBuilder;
 import tp.pr4.control.NewVehicleEventBuilder;
 import tp.pr4.ini.Ini;
 import tp.pr4.model.TrafficSimulator;
@@ -162,7 +168,9 @@ public class Main {
 		// corresponding fields.
 		
 		EventBuilder[] eventBuilders = { new MakeVehicleFaultyEventBuilder(), new NewVehicleEventBuilder(),
-				new NewRoadEventBuilder(), new NewJunctionEventBuilder() };
+				new NewRoadEventBuilder(), new NewJunctionEventBuilder(), new NewCarEventBuilder(),
+				new NewBikeEventBuilder(), new NewLanesRoadEventBuilder(), new NewDirtRoadEventBuilder(),
+				new NewRoundRobinJunctionEventBuilder(), new NewMostCrowdedJunctionEventBuilder() };
 		
 		try {
 			InputStream input = new FileInputStream(_inFile);

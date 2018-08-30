@@ -67,7 +67,6 @@ public class Road extends SimulatedObject {
 	void advance(int time) {
 		int speed = calculateBaseSpeed();
 		boolean faultyAhead = false;
-		int reductionFactor = 2;
 		
 		if(speed > maxSpeed) speed = maxSpeed;
 		
@@ -77,7 +76,7 @@ public class Road extends SimulatedObject {
 				v.setSpeed(0);
 			}
 			else {
-				if (faultyAhead) speed = speed / reductionFactor;
+				if (faultyAhead) speed = reduceSpeedFactor(speed);
 				v.setSpeed(speed);
 			}
 			v.advance(time);
@@ -151,6 +150,10 @@ public class Road extends SimulatedObject {
 		
 		int baseSpeed = (maxSpeed / count) + 1;
 		return baseSpeed;
+	}
+	
+	protected int reduceSpeedFactor(int speed) {
+		return speed/2;
 	}
 
 }

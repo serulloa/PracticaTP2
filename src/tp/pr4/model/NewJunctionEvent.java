@@ -6,7 +6,7 @@ public class NewJunctionEvent extends Event {
 	// Atributos
 	//########################################################################
 	
-	private String junctionId;
+	protected String junctionId;
 	
 	//########################################################################
 	// Constructores

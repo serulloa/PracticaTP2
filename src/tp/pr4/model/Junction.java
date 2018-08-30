@@ -43,7 +43,7 @@ public class Junction extends SimulatedObject {
 	}
 	
 	void addIncomingRoad(Road road) {
-		incomingRoads.add(new IncomingRoad(road));
+		incomingRoads.add(createIncomingRoadQueue(road));
 	}
 	
 	void addOutgoingRoad(Road road) {
@@ -91,16 +91,11 @@ public class Junction extends SimulatedObject {
 			}
 		}
 		
-		if (index >= 0 && index < incomingRoads.size()) {
-			if (index == incomingRoads.size()-1) incomingRoads.get(0).green = true;
-			else incomingRoads.get(index+1).green = true;
-		} 
-		else if (!foundGreen && !incomingRoads.isEmpty()) incomingRoads.get(0).green = true;
+		if (!incomingRoads.isEmpty()) incomingRoads.get((index+1)%incomingRoads.size()).green = true;
 	}
 	
 	protected IncomingRoad createIncomingRoadQueue(Road road) {
-		//TODO
-		return null;
+		return new IncomingRoad(road);
 	}
 	
 	@Override

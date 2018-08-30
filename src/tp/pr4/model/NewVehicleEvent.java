@@ -8,9 +8,9 @@ public class NewVehicleEvent extends Event {
 	// Atributos
 	//########################################################################
 	
-	private String vehicleId;
-	private int maxSpeed;
-	private String[] junctions;
+	protected String vehicleId;
+	protected int maxSpeed;
+	protected String[] junctions;
 	
 	//########################################################################
 	// Constructores
