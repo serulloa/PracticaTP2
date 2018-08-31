@@ -8,6 +8,7 @@ import java.util.List;
 import tp.pr4.ini.Ini;
 import tp.pr4.ini.IniSection;
 import tp.pr4.model.Event;
+import tp.pr4.model.SimulatorError;
 import tp.pr4.model.TrafficSimulator;
 
 public class Controller {
@@ -57,6 +58,8 @@ public class Controller {
 		try {
 			loadEvents(inputStream);
 			sim.run(ticks);
+		} catch (SimulatorError e) {
+			System.err.println(e);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (NullPointerException e) {
@@ -76,6 +79,8 @@ public class Controller {
 		try {
 			loadEvents(inputStream);
 			sim.run(ticks);
+		} catch (SimulatorError e) {
+			System.err.println(e);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (NullPointerException e) {

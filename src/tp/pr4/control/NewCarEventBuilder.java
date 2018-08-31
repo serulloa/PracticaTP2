@@ -31,7 +31,7 @@ public class NewCarEventBuilder extends EventBuilder {
 	public Event parse(IniSection section) {
 		Event event = null;
 		
-		if(section.getTag().equals(this.tag)){
+		if(section.getTag().equals(this.tag) && section.getKeys().size() == keys.length){
 			this.defaultValues[0] = section.getValue(this.keys[0]);
 			this.defaultValues[1] = section.getValue(this.keys[1]);
 

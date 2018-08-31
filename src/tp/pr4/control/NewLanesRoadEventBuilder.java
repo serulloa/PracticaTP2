@@ -30,7 +30,7 @@ public class NewLanesRoadEventBuilder extends EventBuilder {
 	public Event parse(IniSection section) {
 		Event event = null;
 		
-		if(section.getTag().equals(this.tag)) {			
+		if(section.getTag().equals(this.tag) && section.getKeys().size() == keys.length) {			
 			for(int i=0 ; i<keys.length ; i++)
 				this.defaultValues[i] = section.getValue(this.keys[i]);
 

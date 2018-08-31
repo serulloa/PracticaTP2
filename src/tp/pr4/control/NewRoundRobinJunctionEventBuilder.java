@@ -27,12 +27,12 @@ public class NewRoundRobinJunctionEventBuilder extends EventBuilder {
 	public Event parse(IniSection section) {
 		Event event = null;
 		
-		if(section.getTag().equals(this.tag)) {
+		if(section.getTag().equals(this.tag) && section.getKeys().size() == keys.length) {
 			this.defaultValues[0] = section.getValue(this.keys[0]);
 			this.defaultValues[1] = section.getValue(this.keys[1]);
-			this.defaultValues[0] = section.getValue(this.keys[2]);
-			this.defaultValues[1] = section.getValue(this.keys[3]);
-			this.defaultValues[0] = section.getValue(this.keys[4]);
+			this.defaultValues[2] = section.getValue(this.keys[2]);
+			this.defaultValues[3] = section.getValue(this.keys[3]);
+			this.defaultValues[4] = section.getValue(this.keys[4]);
 			
 			event = new NewRoundRobinJunctionEvent(Integer.parseInt(this.defaultValues[0]), this.defaultValues[1],
 					Integer.parseInt(this.defaultValues[3]), Integer.parseInt(this.defaultValues[4]));

@@ -24,6 +24,7 @@ public class NewCarEvent extends NewVehicleEvent {
 			
 			for (String id : this.junctions) {
 				if (roadMap.hasJunction(id)) junctions.add(roadMap.getJunction(id));
+				else throw new SimulatorError("The textfile has errors. The junction " + id + " does not exist.");
 			}
 			
 			roadMap.addVehicle(new Car(vehicleId, maxSpeed, maxFaultDuration, faultProbability, seed, resistance, junctions));

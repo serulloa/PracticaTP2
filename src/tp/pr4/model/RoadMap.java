@@ -36,17 +36,23 @@ public class RoadMap {
 	//########################################################################
 	
 	void addVehicle(Vehicle vehicle) {
+		if (vehicleMap.containsKey(vehicle.getId())) throw new SimulatorError("The vehicle " + vehicle + " already exists");
+		
 		vehicles.add(vehicle);
 		vehicleMap.put(vehicle.getId(), vehicle);
 		vehicle.moveToNextRoad();
 	}
 	
 	void addRoad(Road road) {
+		if (roadMap.containsKey(road.getId())) throw new SimulatorError("The road " + road + " already exists");
+		
 		roads.add(road);
 		roadMap.put(road.getId(), road);
 	}
 	
 	void addJunction(Junction junction) {
+		if (junctionMap.containsKey(junction.getId())) throw new SimulatorError("The junction " + junction + " already exists");
+		
 		junctions.add(junction);
 		junctionMap.put(junction.getId(), junction);
 	}

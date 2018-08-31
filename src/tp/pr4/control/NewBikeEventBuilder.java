@@ -2,7 +2,7 @@ package tp.pr4.control;
 
 import tp.pr4.ini.IniSection;
 import tp.pr4.model.Event;
-import tp.pr4.model.NewVehicleEvent;
+import tp.pr4.model.NewBikeEvent;
 
 public class NewBikeEventBuilder extends EventBuilder {
 	
@@ -27,7 +27,7 @@ public class NewBikeEventBuilder extends EventBuilder {
 	public Event parse(IniSection section) {
 		Event event = null;
 		
-		if(section.getTag().equals(this.tag)){
+		if(section.getTag().equals(this.tag) && section.getKeys().size() == keys.length){
 			this.defaultValues[0] = section.getValue(this.keys[0]);
 			this.defaultValues[1] = section.getValue(this.keys[1]);
 
@@ -41,7 +41,7 @@ public class NewBikeEventBuilder extends EventBuilder {
 			this.defaultValues[3] = section.getValue(this.keys[3]);
 			this.defaultValues[4] = section.getValue(this.keys[4]);
 			
-			event = new NewVehicleEvent(Integer.parseInt(this.defaultValues[0]), this.defaultValues[1], 
+			event = new NewBikeEvent(Integer.parseInt(this.defaultValues[0]), this.defaultValues[1], 
 					Integer.parseInt(this.defaultValues[3]), aux);
 		}
 		

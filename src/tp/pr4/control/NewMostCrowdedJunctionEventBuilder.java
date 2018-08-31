@@ -25,10 +25,10 @@ public class NewMostCrowdedJunctionEventBuilder extends EventBuilder {
 	public Event parse(IniSection section) {
 		Event event = null;
 		
-		if(section.getTag().equals(this.tag)) {
+		if(section.getTag().equals(this.tag) && section.getKeys().size() == keys.length) {
 			this.defaultValues[0] = section.getValue(this.keys[0]);
 			this.defaultValues[1] = section.getValue(this.keys[1]);
-			this.defaultValues[0] = section.getValue(this.keys[2]);
+			this.defaultValues[2] = section.getValue(this.keys[2]);
 			
 			event = new NewMostCrowdedJunctionEvent(Integer.parseInt(this.defaultValues[0]), this.defaultValues[1]);
 		}

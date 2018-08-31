@@ -36,23 +36,27 @@ public class TrafficSimulator {
 	public void run(int ticks) throws IOException {
 		boolean done = false;
 		
-		while(time < ticks) {			
-			for (Event event : events) 
-				event.execute(map, time);
-			
-			List<Road> roads = map.getRoads();
-			for (Road road : roads) {
-				road.advance(time);
+		while(time < ticks) {
+			try {
+				for (Event event : events) 
+					event.execute(map, time);
+				
+				List<Road> roads = map.getRoads();
+				for (Road road : roads) {
+					road.advance(time);
+				}
+				
+				List<Junction> junctions = map.getJunctions();
+				for (Junction junction : junctions) {
+					junction.advance(time);
+				}
+				
+				time++;
+				
+				this.outStream.write(map.generateReport(time).getBytes());
+			} catch (SimulatorError e) {
+				throw e;
 			}
-			
-			List<Junction> junctions = map.getJunctions();
-			for (Junction junction : junctions) {
-				junction.advance(time);
-			}
-			
-			time++;
-			
-			this.outStream.write(map.generateReport(time).getBytes());
 		}
 	}
 	
