@@ -100,4 +100,8 @@ public class RoadMap {
 	public List<Junction> getJunctions() {
 		return junctions;
 	}
+	
+	public List<Vehicle> getVehicles() {
+		return vehicles;
+	}
 }

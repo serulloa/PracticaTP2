@@ -31,8 +31,8 @@ public class LanesRoad extends Road {
 	
 	@Override
 	protected void fillReportDetails(IniSection iniSection) {
-		super.fillReportDetails(iniSection);
 		iniSection.setValue("type", "lanes");
+		super.fillReportDetails(iniSection);
 	}
 
 }

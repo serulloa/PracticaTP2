@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -32,6 +34,7 @@ import tp.pr5.control.NewRoundRobinJunctionEventBuilder;
 import tp.pr5.control.NewVehicleEventBuilder;
 import tp.pr5.ini.Ini;
 import tp.pr5.model.TrafficSimulator;
+import tp.pr5.view.MainWindow;
 
 public class Main {
 
@@ -39,6 +42,7 @@ public class Main {
 	private static Integer _timeLimit = null;
 	private static String _inFile = null;
 	private static String _outFile = null;
+	private static String _mode = null;
 
 	private static void parseArgs(String[] args) {
 
@@ -52,6 +56,7 @@ public class Main {
 		try {
 			CommandLine line = parser.parse(cmdLineOptions, args);
 			parseHelpOption(line, cmdLineOptions);
+			parseModeOption(line);
 			parseInFileOption(line);
 			parseOutFileOption(line);
 			parseStepsOption(line);
@@ -80,6 +85,7 @@ public class Main {
 
 		cmdLineOptions.addOption(Option.builder("h").longOpt("help").desc("Print this message").build());
 		cmdLineOptions.addOption(Option.builder("i").longOpt("input").hasArg().desc("Events input file").build());
+		cmdLineOptions.addOption(Option.builder("m").longOpt("mode").hasArg().desc("’batch’ for batch mode and ’gui’ for GUI mode (default value is ’batch’)").build());
 		cmdLineOptions.addOption(
 				Option.builder("o").longOpt("output").hasArg().desc("Output file, where reports are written.").build());
 		cmdLineOptions.addOption(Option.builder("t").longOpt("ticks").hasArg()
@@ -105,7 +111,8 @@ public class Main {
 	}
 
 	private static void parseOutFileOption(CommandLine line) throws ParseException {
-		_outFile = line.getOptionValue("o");
+		if (_mode.equals("gui")) _outFile = null;
+		else _outFile = line.getOptionValue("o");
 	}
 
 	private static void parseStepsOption(CommandLine line) throws ParseException {
@@ -116,6 +123,10 @@ public class Main {
 		} catch (Exception e) {
 			throw new ParseException("Invalid value for time limit: " + t);
 		}
+	}
+	
+	private static void parseModeOption(CommandLine line) throws ParseException {
+		_mode = line.getOptionValue("m");
 	}
 
 	/**
@@ -177,7 +188,7 @@ public class Main {
 			OutputStream output = new FileOutputStream(_outFile);
 			
 			TrafficSimulator trafficSimulator = new TrafficSimulator(output);
-			Controller controller = new Controller(trafficSimulator, _timeLimit, output, input);
+			Controller controller = new Controller(trafficSimulator, _timeLimit, output, input, false);
 			
 			controller.setEventBuilders(eventBuilders);
 			controller.run(_timeLimit);
@@ -190,10 +201,36 @@ public class Main {
 			System.err.print(e.getMessage());
 		}
 	}
+	
+	private static void startGUIMode() {
+		EventBuilder[] eventBuilders = { new MakeVehicleFaultyEventBuilder(), new NewVehicleEventBuilder(),
+				new NewRoadEventBuilder(), new NewJunctionEventBuilder(), new NewCarEventBuilder(),
+				new NewBikeEventBuilder(), new NewLanesRoadEventBuilder(), new NewDirtRoadEventBuilder(),
+				new NewRoundRobinJunctionEventBuilder(), new NewMostCrowdedJunctionEventBuilder() };
+		
+		try {
+			InputStream input = new FileInputStream(_inFile);
+			
+			TrafficSimulator trafficSimulator = new TrafficSimulator(null);
+			Controller controller = new Controller(trafficSimulator, 0, null, input, true);
+			
+			controller.setEventBuilders(eventBuilders);
+			SwingUtilities.invokeAndWait(new Runnable() {
+				public void run() {
+					new MainWindow(trafficSimulator, _inFile, controller);
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.print(e.getMessage());
+		}
+	}
 
 	private static void start(String[] args) throws IOException {
 		parseArgs(args);
-		startBatchMode();
+		
+		if (_mode.equals("gui")) startGUIMode();
+		else startBatchMode();
 	}
 
 	public static void main(String[] args) throws IOException, InvocationTargetException, InterruptedException {
@@ -212,9 +249,9 @@ public class Main {
 	    //	test("resources/examples/events/basic");
 
 		// Call start to start the simulator from command line, etc.
-		// start(args);
+		start(args);
 		
-		test("examples/advanced");
+//		test("examples/advanced");
 	}
 
 }

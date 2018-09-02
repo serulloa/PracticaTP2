@@ -22,16 +22,18 @@ public class Controller {
 	protected InputStream inputStream; 		// flujo de entrada
 	protected int ticks; 					// pasos de la simulación dados por el usuario
 	EventBuilder[] eventBuilders = {}; 		// array de constructores de eventos
+	private boolean modeGUI;
 	
 	//########################################################################
 	// Constuctores
 	//########################################################################
 	
-	public Controller(TrafficSimulator sim, int ticks, OutputStream output, InputStream input) {
+	public Controller(TrafficSimulator sim, int ticks, OutputStream output, InputStream input, boolean modeGUI) {
 		this.sim = sim;
 		this.ticks = ticks;
 		this.outputStream = output;
 		this.inputStream = input;
+		this.modeGUI = modeGUI;
 	}
 	
 	public Controller(TrafficSimulator sim, OutputStream output) {
@@ -56,7 +58,7 @@ public class Controller {
 	
 	public void run() {
 		try {
-			loadEvents(inputStream);
+			if (!modeGUI) loadEvents(inputStream);
 			sim.run(ticks);
 		} catch (SimulatorError e) {
 			System.err.println(e);
@@ -68,7 +70,7 @@ public class Controller {
 	}
 	
 	public void reset() {
-		//TODO
+		sim.reset();
 	}
 	
 	public void setOutputStream(OutputStream output) {
@@ -77,8 +79,8 @@ public class Controller {
 	
 	public void run(int time) {
 		try {
-			loadEvents(inputStream);
-			sim.run(ticks);
+			if (!modeGUI) loadEvents(inputStream);
+			sim.run(time);
 		} catch (SimulatorError e) {
 			System.err.println(e);
 		} catch (IOException e) {
@@ -89,7 +91,6 @@ public class Controller {
 	}
 	
 	public void loadEvents(InputStream input) throws IOException {
-		//TODO
 		Ini iniStream = new Ini(input);
 		List<IniSection> sections = iniStream.getSections();
 		

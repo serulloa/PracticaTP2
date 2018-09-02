@@ -72,14 +72,6 @@ public class TrafficSimulator {
 		this.outStream = outStream;
 	}
 	
-//	public void addObserver(TrafficSimulatorObserver observer) {
-//		//TODO  
-//	}
-//	
-//	public void removeObserver(TrafficSimulatorObserver observer) {
-//		//TODO
-//	}
-	
 	@Override
 	public String toString() {
 		return null;
