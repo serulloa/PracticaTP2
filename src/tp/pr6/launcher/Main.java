@@ -251,7 +251,7 @@ public class Main {
 		// Call start to start the simulator from command line, etc.
 		start(args);
 		
-//		test("examples/advanced");
+//		test("examples/basic");
 	}
 
 }

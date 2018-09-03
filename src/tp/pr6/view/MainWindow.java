@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Scanner;
+import java.lang.Runnable;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -37,6 +38,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
@@ -79,7 +81,8 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 	private JButton runButton; 
 	private JButton stopButton;
 	private JButton resetButton; 
-	private JSpinner stepsSpinner; 
+	private JSpinner stepsSpinner;
+	private JSpinner delaySpinner;
 	private JTextField timeViewer; 
 	private JButton genReportsButton; 
 	private JButton clearReportsButton; 
@@ -100,6 +103,8 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 	private JunctionsTableModel junctionsTableModel;
 	private RoadMapComponent mapComponent;
 	private String template;
+	
+	private Thread thread;
 	
 	public MainWindow(TrafficSimulator model, String inFileName, Controller ctrl) {
 		super("Traffic Simulator");
@@ -640,11 +645,36 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					ctrl.run(Integer.parseInt(stepsSpinner.getValue().toString()));
-				} catch (Exception ex) {
-					System.err.println("ERROR: " + ex.getMessage());
-				}
+				setViewState(false, true);
+				thread = new Thread() {
+					
+					public void run() {
+						try {
+							for (int i = 0; i < Integer.parseInt(stepsSpinner.getValue().toString()) && !Thread.currentThread().interrupted(); i++) {
+								ctrl.run(1);
+								
+								try {
+									thread.sleep(Integer.parseInt(delaySpinner.getValue().toString()));
+								} catch (InterruptedException ex) {
+									Thread.currentThread().interrupt();
+								}
+							}
+							
+							SwingUtilities.invokeLater(new Runnable() {
+
+								@Override
+								public void run() {
+									setViewState(true, false);
+								}
+								
+							});
+						} catch (Exception ex) {
+							System.err.println("ERROR: " + ex.getMessage());
+						}
+					}
+					
+				};
+				thread.start();
 			}
 			
 		});
@@ -660,7 +690,8 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Not implemented");
+				setViewState(true,false);
+				thread.interrupt();
 			}
 			
 		});
@@ -685,11 +716,15 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		// Sumar resetButton a toolBar
 		toolBar.add(resetButton);
 		
+		toolBar.add(new JLabel(" Delay: "));
+		delaySpinner = new JSpinner(new SpinnerNumberModel(0,0,2000,1000));
+		delaySpinner.setMaximumSize(new Dimension(70, 50));
+		toolBar.add(delaySpinner);
+		
 		toolBar.add(new JLabel(" Steps: "));
 		stepsSpinner = new JSpinner(new SpinnerNumberModel(5, 1, 1000, 1));
 		// Configurar stepsSpinner
 		stepsSpinner.setMaximumSize(new Dimension(70, 50));
-		
 		// Sumar stepsSpinner a toolBar
 		toolBar.add(stepsSpinner);
 		
@@ -773,7 +808,14 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		this.map = map;
 		this.events = events;
 		
-		update();
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				update();
+			}
+			
+		});
 	}
 
 	@Override
@@ -782,8 +824,14 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		this.map = map;
 		this.events = events;
 		
-		eventsTableModel.setEvents(events);
-		update();
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				update();
+			}
+			
+		});
 	}
 
 	@Override
@@ -792,7 +840,14 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		this.map = map;
 		this.events = events;
 		
-		eventsTableModel.setEvents(events);
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				eventsTableModel.setEvents(events);
+			}
+			
+		});
 	}
 
 	@Override
@@ -801,10 +856,14 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		this.map = map;
 		this.events = events;
 		
-		vehiclesTableModel.setVehicles(map.getVehicles());
-		roadsTableModel.setRoads(map.getRoads());
-		junctionsTableModel.setJunctions(map.getJunctions());
-		update();
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				update();
+			}
+			
+		});
 	}
 
 	@Override
@@ -813,7 +872,15 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		this.map = map;
 		this.events = events;
 		
-		update();
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				JOptionPane.showMessageDialog(mainPanel, e, "ERROR", JOptionPane.ERROR_MESSAGE);
+				update();
+			}
+			
+		});
 	}
 	
 	private void refreshEventsAreaBorder() {
@@ -889,6 +956,26 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		
 		mapComponent.setMap(map);
 		timeViewer.setText(String.valueOf(time));
+	}
+	
+	private void setViewState(boolean ctrlPanelState, boolean stopButtonState) {
+		fileMenu.setEnabled(ctrlPanelState);
+		simulatorMenu.setEnabled(ctrlPanelState);
+		reportsMenu.setEnabled(ctrlPanelState);
+		
+		loadButton.setEnabled(ctrlPanelState);
+		saveButton.setEnabled(ctrlPanelState);
+		clearEventsButton.setEnabled(ctrlPanelState);
+		checkInEventsButton.setEnabled(ctrlPanelState);
+		runButton.setEnabled(ctrlPanelState);
+		resetButton.setEnabled(ctrlPanelState);
+		stepsSpinner.setEnabled(ctrlPanelState);
+		genReportsButton.setEnabled(ctrlPanelState);
+		clearReportsButton.setEnabled(ctrlPanelState);
+		saveReportsButton.setEnabled(ctrlPanelState);
+		quitButton.setEnabled(ctrlPanelState);
+		
+		stopButton.setEnabled(stopButtonState);
 	}
 
 }
