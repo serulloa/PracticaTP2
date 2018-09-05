@@ -57,9 +57,9 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 	private static final long serialVersionUID = 1L;
 	
 	private Controller ctrl; // la vista usa el controlador
-	private RoadMap map; // para los métodos update de Observer
-	private int time; // para los métodos update de Observer
-	private List<Event> events; // para los métodos update de Observer 
+	private RoadMap map; // para los mÃ©todos update de Observer
+	private int time; // para los mÃ©todos update de Observer
+	private List<Event> events; // para los mÃ©todos update de Observer 
 	private OutputStream reportsOutputStream;
 	
 	private JPanel mainPanel; 
@@ -103,6 +103,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 	private JunctionsTableModel junctionsTableModel;
 	private RoadMapComponent mapComponent;
 	private String template;
+	private JLabel labelStatusBar;
 	
 	private Thread thread;
 	
@@ -111,7 +112,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		this.ctrl = ctrl;
 		currentFile = inFileName != null ? new File(inFileName) : null;
 		reportsOutputStream = new JTextAreaOutputStream(reportsArea);
-		ctrl.setOutputStream(reportsOutputStream); // ver sección 8
+		ctrl.setOutputStream(reportsOutputStream); // ver secciÃ³n 8
 		initGUI();
 		model.addObserver(this);
 	}
@@ -147,8 +148,9 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		addRoadsTable(); // tabla de carreteras
 		addJunctionsTable(); // tabla de cruces
 		addMap(); // mapa de carreteras
+		addStatusBar();
 		
-		// Añade configuraciones de la ventana principal
+		// AÃ±ade configuraciones de la ventana principal
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setExtendedState(MAXIMIZED_BOTH);
 		pack();
@@ -160,11 +162,11 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		panelEditor = new JPanel(new BorderLayout());
 		eventsEditor = new JTextArea(40,30);
 		
-		// Suma eventsEditor al JPanel y añade JScrollPane
+		// Suma eventsEditor al JPanel y aÃ±ade JScrollPane
 		panelEditor.add(new JScrollPane(eventsEditor, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED),
 				BorderLayout.CENTER);
 		
-		// Añade JPanel al panel correspondiente de la ventana principal
+		// AÃ±ade JPanel al panel correspondiente de la ventana principal
 		contentPanel_2.add(panelEditor);
 		
 		if (currentFile != null) {
@@ -173,7 +175,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		
 		refreshEventsAreaBorder();
 		
-		// Crea el PopupMenu de eventos según la figura
+		// Crea el PopupMenu de eventos segÃºn la figura
 		JPopupMenu popupMenu = new JPopupMenu();
 		
 		// Crea y configura el JMenu de Add Template
@@ -333,7 +335,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		eventsTableModel = new EventsTableModel();
 		eventsTable = new JTable(eventsTableModel);
 		
-		// Suma eventsTable al JPanel y añade JScrollPane
+		// Suma eventsTable al JPanel y aÃ±ade JScrollPane
 		panelEventsView.add(new JScrollPane(eventsTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), 
 				BorderLayout.CENTER);
 		
@@ -351,7 +353,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		reportsArea = new JTextArea(40, 30);
 		reportsArea.setEditable(false);
 		
-		// Suma reportsArea al JPanel y añade JScrollPane
+		// Suma reportsArea al JPanel y aÃ±ade JScrollPane
 		panelReports.add(new JScrollPane(reportsArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), 
 				BorderLayout.CENTER);
 		
@@ -368,7 +370,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		vehiclesTableModel = new VehiclesTableModel();
 		vehiclesTable = new JTable(vehiclesTableModel);
 		
-		// Suma eventsTable al JPanel y añade JScrollPane
+		// Suma eventsTable al JPanel y aÃ±ade JScrollPane
 		panelVehiclesView.add(new JScrollPane(vehiclesTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), 
 				BorderLayout.CENTER);
 		
@@ -385,7 +387,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		roadsTableModel = new RoadsTableModel();
 		roadsTable = new JTable(roadsTableModel);
 		
-		// Suma eventsTable al JPanel y añade JScrollPane
+		// Suma eventsTable al JPanel y aÃ±ade JScrollPane
 		panelRoadsView.add(new JScrollPane(roadsTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), 
 				BorderLayout.CENTER);
 		
@@ -402,7 +404,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		junctionsTableModel = new JunctionsTableModel();
 		junctionsTable = new JTable(junctionsTableModel);
 		
-		// Suma eventsTable al JPanel y añade JScrollPane
+		// Suma eventsTable al JPanel y aÃ±ade JScrollPane
 		panelJunctionsView.add(new JScrollPane(junctionsTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), 
 				BorderLayout.CENTER);
 		
@@ -424,11 +426,11 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		JMenuBar menuBar = new JMenuBar();
 		fileMenu = new JMenu("File");
 		
-		// Añade fileMenu a menuBar
+		// AÃ±ade fileMenu a menuBar
 		menuBar.add(fileMenu);
 		fileMenu.setMnemonic(KeyEvent.VK_F);
 		
-		// Crea y configura JMenuItem “Load Events”
+		// Crea y configura JMenuItem â€œLoad Eventsâ€�
 		JMenuItem loadItem = new JMenuItem("Load Events");
 		loadItem.addActionListener(new ActionListener() {
 
@@ -441,7 +443,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		loadItem.setMnemonic(KeyEvent.VK_L);
 		loadItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.ALT_MASK));
 		
-		// Crea y configura JMenuItem “Save Events”
+		// Crea y configura JMenuItem â€œSave Eventsâ€�
 		JMenuItem saveItem = new JMenuItem("Save Events");
 		saveItem.addActionListener(new ActionListener() {
 
@@ -454,7 +456,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		saveItem.setMnemonic(KeyEvent.VK_S);
 		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
 		
-		// Crea y configura JMenuItem “Save Report”
+		// Crea y configura JMenuItem â€œSave Reportâ€�
 		JMenuItem saveReportItem = new JMenuItem("Save Report");
 		saveReportItem.addActionListener(new ActionListener() {
 
@@ -467,7 +469,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		saveReportItem.setMnemonic(KeyEvent.VK_R);
 		saveReportItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.ALT_MASK));
 		
-		// Crea y configura JMenuItem “Exit”
+		// Crea y configura JMenuItem â€œExitâ€�
 		JMenuItem exitItem = new JMenuItem("Exit");
 		exitItem.addActionListener(new ActionListener() {
 
@@ -489,11 +491,11 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		fileMenu.add(exitItem);
 		
 		simulatorMenu = new JMenu("Simulator");
-		// Añade simulatorMenu a menuBar
+		// AÃ±ade simulatorMenu a menuBar
 		menuBar.add(simulatorMenu);
 		simulatorMenu.setMnemonic(KeyEvent.VK_S);
 		
-		// Crea y configura JMenuItem “Run”
+		// Crea y configura JMenuItem â€œRunâ€�
 		JMenuItem runItem = new JMenuItem("Run");
 		runItem.addActionListener(new ActionListener() {
 
@@ -504,7 +506,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 			
 		});
 		
-		// Crea y configura JMenuItem “Reset”
+		// Crea y configura JMenuItem â€œResetâ€�
 		JMenuItem resetItem = new JMenuItem("Reset");
 		resetItem.addActionListener(new ActionListener() {
 
@@ -515,7 +517,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 			
 		});
 		
-		// Crea y configura JMenuItem “Redirect Output”
+		// Crea y configura JMenuItem â€œRedirect Outputâ€�
 		JMenuItem redirectItem = new JMenuItem("Redirect Output");
 		redirectItem.addActionListener(new ActionListener() {
 
@@ -532,11 +534,11 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		simulatorMenu.add(redirectItem);
 		
 		reportsMenu = new JMenu("Reports");
-		// Añade reportsMenu a menuBar
+		// AÃ±ade reportsMenu a menuBar
 		menuBar.add(reportsMenu);
 		reportsMenu.setMnemonic(KeyEvent.VK_R);
 		
-		// Crea y configura JMenuItem “Generate”
+		// Crea y configura JMenuItem â€œGenerateâ€�
 		JMenuItem generateItem = new JMenuItem("Generate");
 		generateItem.addActionListener(new ActionListener() {
 
@@ -547,7 +549,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 			
 		});
 		
-		// Crea y configura JMenuItem “Clear”
+		// Crea y configura JMenuItem â€œClearâ€�
 		JMenuItem clearItem = new JMenuItem("Clear");
 		clearItem.addActionListener(new ActionListener() {
 
@@ -627,6 +629,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					ctrl.loadEvents(new ByteArrayInputStream(eventsEditor.getText().getBytes()));
+					labelStatusBar.setText("Events checked in");
 				} catch (IOException ioE) {
 					System.err.println("ERROR: " + ioE.getMessage());
 				}
@@ -650,6 +653,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 					
 					public void run() {
 						try {
+							labelStatusBar.setText("Executing events");
 							for (int i = 0; i < Integer.parseInt(stepsSpinner.getValue().toString()) && !Thread.currentThread().interrupted(); i++) {
 								ctrl.run(1);
 								
@@ -659,6 +663,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 									Thread.currentThread().interrupt();
 								}
 							}
+							labelStatusBar.setText("Events executed");
 							
 							SwingUtilities.invokeLater(new Runnable() {
 
@@ -690,6 +695,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				labelStatusBar.setText("Simulator stopped");
 				setViewState(true,false);
 				thread.interrupt();
 			}
@@ -708,6 +714,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				labelStatusBar.setText("Cleaned all events and simulator reseted");
 				ctrl.reset();
 			}
 			
@@ -744,6 +751,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				labelStatusBar.setText("Report generated at time: " + time);
 				reportsArea.append(map.generateReport(time));
 			}
 			
@@ -760,6 +768,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				labelStatusBar.setText("Report cleaned");
 				reportsArea.setText("");
 			}
 			
@@ -802,6 +811,18 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		toolBar.add(quitButton);
 	}
 
+	private void addStatusBar() {
+		JPanel panelStatus = new JPanel();
+		
+		panelStatus.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		labelStatusBar = new JLabel("Greetings! This is the Traffic Simulator");
+		labelStatusBar.setForeground(Color.BLUE);
+		
+		panelStatus.add(labelStatusBar);
+		
+		mainPanel.add(panelStatus, BorderLayout.SOUTH);
+	}
+	
 	@Override
 	public void registered(int time, RoadMap map, List<Event> events) {
 		this.time = time;
@@ -877,6 +898,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 			@Override
 			public void run() {
 				JOptionPane.showMessageDialog(mainPanel, e, "ERROR", JOptionPane.ERROR_MESSAGE);
+				labelStatusBar.setText(e.getMessage());
 				update();
 			}
 			
@@ -918,6 +940,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 			String eventsText = read(eventsFile);
 			eventsEditor.setText(eventsText);
 			currentFile = eventsFile;
+			labelStatusBar.setText("Event file loaded in editor");
 		}
 		
 		refreshEventsAreaBorder();
@@ -927,6 +950,7 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 		if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
 			File saveFile = fc.getSelectedFile();
 			write(saveFile, eventsEditor.getText());
+			labelStatusBar.setText("Event file saved");
 		}
 	}
 	
@@ -940,6 +964,8 @@ public class MainWindow extends JFrame implements TrafficSimulatorObserver {
 	private void clearEventsArea() {
 		eventsEditor.setText("");
 		currentFile = null;
+
+		labelStatusBar.setText("Events editor cleaned");
 		refreshEventsAreaBorder();
 	}
 	
